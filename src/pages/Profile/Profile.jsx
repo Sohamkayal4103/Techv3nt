@@ -2,9 +2,13 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import React, { useState } from "react";
 import CustomButton from "../../components/CustomButton";
 import FormField from "../../components/FormField";
+import { ethers } from "ethers";
+import createUserabi from "../../utils/createuserabi.json";
+import userabi from "../../utils/userabi.json";
 
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [contractuser, setContractuser] = useState("");
   const [form, setForm] = useState({
     user_name: "",
     user_email: "",
@@ -15,9 +19,56 @@ const Profile = () => {
     setForm({ ...form, [fieldName]: e.target.value });
   };
 
+  const checkProfile = async (e) => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const accounts = await provider.listAccounts();
+    console.log(accounts);
+    const signer = provider.getSigner()
+    const contract = new ethers.Contract(
+        "0x6c4Cda37aEFf8A94f84c3BF64A857F16030be89d",
+        createUserabi,
+        signer
+    );
+    return contract.checkUser(accounts[0]);
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(form);
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const accounts = await provider.listAccounts();
+    // console.log(accounts);
+    const signer = provider.getSigner()
+    const contract = new ethers.Contract(
+        "0x6c4Cda37aEFf8A94f84c3BF64A857F16030be89d",
+        createUserabi,
+        signer
+    );
+    
+    if(!checkProfile){
+      const tx = await contract.createUser(
+        form.user_name,
+        form.user_email,
+        form.user_pref_location,
+        accounts[0]
+      )
+      console.log("Transaction id" + tx);
+    }
+    else{
+      console.log("Profile already created");
+      console.log("This" + contract._users[accounts[0]]);
+      setContractuser(contract._users[accounts[0]]);
+      const contract2 = new ethers.Contract(
+        contractuser,
+        userabi,
+        signer
+      );
+      console.log(contract2.name());
+      setForm.user_name(contract2.name);
+      setForm.email(contract2.email);
+      setForm.user_pref_location(contract2.location);
+    }
+
   };
 
   return (

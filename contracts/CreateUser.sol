@@ -3,26 +3,33 @@ pragma solidity ^0.8.7;
 import "./User.sol";
 
 contract CreateUser {
-    mapping(address => User) public _users;
-    uint totalUsers = 0;
+    User[] public _users;
+    
 
-    event UserCreated(User indexed newuser);
+    event UserCreated(User indexed newuser, address indexed walletAddress);
+    mapping(address => uint) checkusers;
+
     function userscount() public view returns (uint256) {
-        return totalUsers;
+        return _users.length;
     }
+
+    function checkUser(address walletAddress) public view returns (bool){
+        return checkusers[walletAddress] > 0;
+    }
+
     function createUser(
         string memory name,
         string memory email,
         string memory location,
-        address userWalletaddress
+        address walletAddress
     ) public {
         User newuser = new User(
             name,
             email,
             location
         );
-        totalUsers++;
-        _users[userWalletaddress] = newuser;
-        emit UserCreated(newuser);
+        _users.push(newuser);
+        checkusers[walletAddress]++;
+        emit UserCreated(newuser, walletAddress);
     }
 }

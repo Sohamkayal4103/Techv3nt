@@ -7,6 +7,12 @@
 				"internalType": "contract User",
 				"name": "newuser",
 				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "walletAddress",
+				"type": "address"
 			}
 		],
 		"name": "UserCreated",
@@ -34,6 +40,25 @@
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "walletAddress",
+				"type": "address"
+			}
+		],
+		"name": "checkUser",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "string",
 				"name": "name",
 				"type": "string"
@@ -50,26 +75,13 @@
 			},
 			{
 				"internalType": "address",
-				"name": "userWalletaddress",
+				"name": "walletAddress",
 				"type": "address"
 			}
 		],
 		"name": "createUser",
 		"outputs": [],
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "userscount",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
 		"type": "function"
 	}
 ]
